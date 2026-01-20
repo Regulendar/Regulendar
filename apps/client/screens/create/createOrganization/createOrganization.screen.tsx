@@ -86,15 +86,14 @@ export const CreateOrganizationScreen = memo(() => {
           </Stack>
         </Alert>
       )}
-      <Stack flex={1} width="$fluid" justify="space-between" px="$size.x5" py="$size.x10" gap="$size.x8">
-        <Stack gap="$size.x3">
+      <Stack flex={1} width="$fluid" justify="space-between" px="$size.x5" pt="$size.x5" pb="$size.x10" gap="$size.x8">
+        <Stack gap="$size.x2">
           <Stack gap="$size.x0_25">
             <Text fontSize="$9" fontWeight="800" color="$colors.black">
-              새로{' '}
+              새로 생성할{' '}
               <Text fontSize="$9" fontWeight="800" color="$colors.darkGreen">
-                생성할{' '}
+                조직의
               </Text>
-              조직의
             </Text>
             <Text fontSize="$9" fontWeight="800" color="$colors.black">
               정보를 입력해주세요.

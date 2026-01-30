@@ -82,7 +82,7 @@ export const ParticipationScreen = memo(() => {
           <TamaguiImage src={organizationImageUrl} width={80} aspectRatio={1} borderRadius="$size.x2" />
         </Stack>
       );
-    }
+    },
   );
 
   const { userId } = useUserStore();
@@ -111,7 +111,7 @@ export const ParticipationScreen = memo(() => {
       return sourceOrganizations;
     }
     const filteredSourceOrganizations = sourceOrganizations.filter(({ organizationName }) =>
-      organizationName.toLowerCase().includes(trimmedSearch)
+      organizationName.toLowerCase().includes(trimmedSearch),
     );
     return filteredSourceOrganizations;
   }, [searchType, searchedOrganization, myOrganizations, exploreOrganizations]);
@@ -159,7 +159,7 @@ export const ParticipationScreen = memo(() => {
         return;
       }
     },
-    [joinOrganizationMutation, userId]
+    [joinOrganizationMutation, userId],
   );
 
   const handleChangeSearchOrganization = useCallback((text: string) => {
@@ -190,7 +190,7 @@ export const ParticipationScreen = memo(() => {
         }
       }
     },
-    [joinOrganization, route, searchType]
+    [joinOrganization, route, searchType],
   );
 
   const handlePressCreateOrganization = useCallback(() => {
@@ -207,7 +207,7 @@ export const ParticipationScreen = memo(() => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <Stack flex={1} px="$size.x5" py="$size.x5" gap="$size.x4">
+      <Stack flex={1} px="$size.x5" py="$size.x4" gap="$size.x4">
         <Text fontSize="$9" fontWeight="800">
           내 조직
         </Text>
@@ -301,7 +301,7 @@ export const ParticipationScreen = memo(() => {
                           onPressOrganizationCard={handlePressOrganizationCard(organizationId)}
                         />
                       );
-                    }
+                    },
                   )}
                 </Stack>
               </ScrollView>

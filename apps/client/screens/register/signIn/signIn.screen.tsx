@@ -72,7 +72,7 @@ export const SignInScreen = memo(() => {
     <SafeAreaView edges={['top']} style={{ flex: 1 }}>
       <Stack flex={1} width="$fluid" px="$size.x5" py="$size.x10" justify="space-between">
         <Stack items="center" gap="$size.x8">
-          <Stack gap="$size.x2">
+          <Stack width="$fluid" gap="$size.x2">
             <Text fontSize="$9" fontWeight="800" color="$colors.black">
               돌아오신 것을 환영해요!
             </Text>

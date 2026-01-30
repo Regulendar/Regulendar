@@ -77,7 +77,7 @@ export const SignUpScreen = memo(() => {
       }
       setUserId(user.id);
     },
-    [setUserId, signUpUserMutation]
+    [setUserId, signUpUserMutation],
   );
 
   const handlePressSignUp = useCallback(async () => {
@@ -128,7 +128,7 @@ export const SignUpScreen = memo(() => {
     <SafeAreaView edges={['top']} style={{ flex: 1 }}>
       <Stack flex={1} width="$fluid" px="$size.x5" py="$size.x10" justify="space-between">
         <Stack items="center" gap="$size.x7">
-          <Stack gap="$size.x1">
+          <Stack width="$fluid" gap="$size.x1">
             <Text fontSize="$9" fontWeight="800" color="$colors.darkGreen">
               똑똑한 일정 관리
             </Text>

@@ -1,0 +1,6 @@
+mutation CreateNewEvent($input: CreateEventInputDto!) {
+  createEvent(input: $input) {
+    message
+    status
+  }
+}

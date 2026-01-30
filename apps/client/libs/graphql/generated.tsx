@@ -386,6 +386,13 @@ export type UserDto = {
   profileImage?: Maybe<Scalars['String']['output']>;
 };
 
+export type CreateNewEventMutationVariables = Exact<{
+  input: CreateEventInputDto;
+}>;
+
+
+export type CreateNewEventMutation = { __typename?: 'Mutation', createEvent: { __typename?: 'CreateEventOutputDto', message: string, status: number } };
+
 export type CreateOrganizationMutationVariables = Exact<{
   input: CreateOrganizationInputDto;
 }>;
@@ -414,6 +421,13 @@ export type GetMyScheduledEventsQueryVariables = Exact<{
 
 export type GetMyScheduledEventsQuery = { __typename?: 'Query', getEvents: { __typename?: 'GetEventsOutputDto', events: Array<{ __typename?: 'EventDto', eventId: string, eventTitle: string, eventDateYear: number, eventDateMonth: number, eventDateDay: number, eventDuration: number, eventStatus: EventStatus }> } };
 
+export type GetEventsByMonthQueryVariables = Exact<{
+  input: GetEventsInputDto;
+}>;
+
+
+export type GetEventsByMonthQuery = { __typename?: 'Query', getEvents: { __typename?: 'GetEventsOutputDto', events: Array<{ __typename?: 'EventDto', eventId: string, eventParticipations: Array<{ __typename?: 'EventParticipationDto', userId: string }> }> } };
+
 export type GetOrganizationsQueryVariables = Exact<{
   input: GetOrganizationsInputDto;
 }>;
@@ -436,6 +450,40 @@ export type SignUpUserMutationVariables = Exact<{
 export type SignUpUserMutation = { __typename?: 'Mutation', addUser: { __typename?: 'AddUserOutputDto', status: number, message: string } };
 
 
+export const CreateNewEventDocument = gql`
+    mutation CreateNewEvent($input: CreateEventInputDto!) {
+  createEvent(input: $input) {
+    message
+    status
+  }
+}
+    `;
+export type CreateNewEventMutationFn = Apollo.MutationFunction<CreateNewEventMutation, CreateNewEventMutationVariables>;
+
+/**
+ * __useCreateNewEventMutation__
+ *
+ * To run a mutation, you first call `useCreateNewEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateNewEventMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createNewEventMutation, { data, loading, error }] = useCreateNewEventMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateNewEventMutation(baseOptions?: Apollo.MutationHookOptions<CreateNewEventMutation, CreateNewEventMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateNewEventMutation, CreateNewEventMutationVariables>(CreateNewEventDocument, options);
+      }
+export type CreateNewEventMutationHookResult = ReturnType<typeof useCreateNewEventMutation>;
+export type CreateNewEventMutationResult = Apollo.MutationResult<CreateNewEventMutation>;
+export type CreateNewEventMutationOptions = Apollo.BaseMutationOptions<CreateNewEventMutation, CreateNewEventMutationVariables>;
 export const CreateOrganizationDocument = gql`
     mutation createOrganization($input: CreateOrganizationInputDto!) {
   createOrganization(input: $input) {
@@ -615,6 +663,54 @@ export type GetMyScheduledEventsQueryHookResult = ReturnType<typeof useGetMySche
 export type GetMyScheduledEventsLazyQueryHookResult = ReturnType<typeof useGetMyScheduledEventsLazyQuery>;
 export type GetMyScheduledEventsSuspenseQueryHookResult = ReturnType<typeof useGetMyScheduledEventsSuspenseQuery>;
 export type GetMyScheduledEventsQueryResult = Apollo.QueryResult<GetMyScheduledEventsQuery, GetMyScheduledEventsQueryVariables>;
+export const GetEventsByMonthDocument = gql`
+    query getEventsByMonth($input: GetEventsInputDto!) {
+  getEvents(input: $input) {
+    events {
+      eventId
+      eventParticipations {
+        userId
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetEventsByMonthQuery__
+ *
+ * To run a query within a React component, call `useGetEventsByMonthQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetEventsByMonthQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetEventsByMonthQuery({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useGetEventsByMonthQuery(baseOptions: Apollo.QueryHookOptions<GetEventsByMonthQuery, GetEventsByMonthQueryVariables> & ({ variables: GetEventsByMonthQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetEventsByMonthQuery, GetEventsByMonthQueryVariables>(GetEventsByMonthDocument, options);
+      }
+export function useGetEventsByMonthLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEventsByMonthQuery, GetEventsByMonthQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetEventsByMonthQuery, GetEventsByMonthQueryVariables>(GetEventsByMonthDocument, options);
+        }
+// @ts-ignore
+export function useGetEventsByMonthSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetEventsByMonthQuery, GetEventsByMonthQueryVariables>): Apollo.UseSuspenseQueryResult<GetEventsByMonthQuery, GetEventsByMonthQueryVariables>;
+export function useGetEventsByMonthSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetEventsByMonthQuery, GetEventsByMonthQueryVariables>): Apollo.UseSuspenseQueryResult<GetEventsByMonthQuery | undefined, GetEventsByMonthQueryVariables>;
+export function useGetEventsByMonthSuspenseQuery(baseOptions?: Apollo.SkipToken | Apollo.SuspenseQueryHookOptions<GetEventsByMonthQuery, GetEventsByMonthQueryVariables>) {
+          const options = baseOptions === Apollo.skipToken ? baseOptions : {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetEventsByMonthQuery, GetEventsByMonthQueryVariables>(GetEventsByMonthDocument, options);
+        }
+export type GetEventsByMonthQueryHookResult = ReturnType<typeof useGetEventsByMonthQuery>;
+export type GetEventsByMonthLazyQueryHookResult = ReturnType<typeof useGetEventsByMonthLazyQuery>;
+export type GetEventsByMonthSuspenseQueryHookResult = ReturnType<typeof useGetEventsByMonthSuspenseQuery>;
+export type GetEventsByMonthQueryResult = Apollo.QueryResult<GetEventsByMonthQuery, GetEventsByMonthQueryVariables>;
 export const GetOrganizationsDocument = gql`
     query getOrganizations($input: GetOrganizationsInputDto!) {
   getOrganizations(input: $input) {

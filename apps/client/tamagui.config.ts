@@ -11,6 +11,7 @@ const tokens = createTokens({
     errorRed: '#ff686a',
     warningYellow: '#F59E0B',
     infoBlue: '#2563EB',
+    extraLightGray: '#f8fafc',
     lightGray: '#c3c3c3',
     mediumGray: '#888888',
     darkGray: '#424242',

@@ -7,10 +7,13 @@ import { Platform } from 'react-native';
 import { Image } from 'expo-image';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCalendar } from '@fortawesome/free-solid-svg-icons/faCalendar';
+import { faHourglassHalf } from '@fortawesome/free-solid-svg-icons/faHourglassHalf';
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons/faArrowRight';
 import { faClock } from '@fortawesome/free-solid-svg-icons/faClock';
 import { useCreateNewEventMutation } from '@/libs';
 import { useUserStore } from '@/stores';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
 
 type IDateTimePickerProps = {
   type: 'date' | 'time';
@@ -21,8 +24,13 @@ type IDateTimePickerProps = {
   onChangeUpdate: (event: DateTimePickerEvent, date?: Date) => void;
 };
 
-type ICreateEventScreenProps = {
-  organizationId: string;
+type IDurationPickerProps = {
+  value: number;
+  isShow: boolean;
+  onPressShow: () => void;
+  onClose: () => void;
+  onChangeHour: (value: number) => void;
+  onChangeMinute: (value: number) => void;
 };
 
 const DateTimePicker = memo<IDateTimePickerProps>(
@@ -108,17 +116,180 @@ const DateTimePicker = memo<IDateTimePickerProps>(
   },
 );
 
-export const CreateEventScreen = memo(({ organizationId }: ICreateEventScreenProps) => {
+const DurationPicker = memo<IDurationPickerProps>(
+  ({ value, isShow, onPressShow, onClose, onChangeHour, onChangeMinute }) => {
+    const durationHours = Math.floor(value / 60);
+    const durationMinutes = value % 60;
+    const dateTimeContext = durationHours > 0 ? `${durationHours}시간 ${durationMinutes}분` : `${durationMinutes}분`;
+    return (
+      <Stack width="$fluid" justify="center" items="flex-start" gap="$size.x1">
+        <Stack
+          width="$fluid"
+          flexDirection="row"
+          justify="space-between"
+          items="center"
+          p="$size.x3"
+          borderWidth={1}
+          borderColor="$colors.lightGray"
+          gap="$size.x3"
+          boxShadow="0 0 10px rgba(0, 0, 0, 0.2)"
+          style={{ borderRadius: 12 }}>
+          <Stack
+            width="$fit"
+            justify="center"
+            items="center"
+            aspectRatio={1}
+            p="$size.x3"
+            bg="$colors.primaryGreen"
+            style={{ borderRadius: 16 }}>
+            <FontAwesomeIcon size={30} icon={faHourglassHalf} color="#EAF8F0" />
+          </Stack>
+          <Stack flex={1} justify="center">
+            <Text fontSize="$4" fontWeight="$500" color="$colors.darkGray">
+              소요 시간
+            </Text>
+            <Text fontSize="$7" fontWeight="$700" color="$colors.darkGray">
+              {dateTimeContext}
+            </Text>
+          </Stack>
+          <Stack p="$size.x2" onPress={onPressShow}>
+            <FontAwesomeIcon size={20} icon={faArrowRight} color="#888888" />
+          </Stack>
+        </Stack>
+        {isShow && (
+          <Sheet
+            modal
+            open={isShow}
+            onOpenChange={(open: boolean) => !open && onClose()}
+            snapPoints={[40]}
+            dismissOnSnapToBottom
+            animation="quick">
+            <Sheet.Overlay
+              animation="medium"
+              enterStyle={{ opacity: 1 }}
+              exitStyle={{ opacity: 0 }}
+              bg="rgba(0,0,0,0.4)"
+            />
+            <Sheet.Frame
+              p="$size.x4"
+              items="center"
+              justify="center"
+              bg="$colors.backgroundWhite"
+              borderTopLeftRadius="$size.x3"
+              borderTopRightRadius="$size.x3">
+              <Stack flex={1} width="$fluid" px="$size.x1" gap="$size.x5">
+                <Text fontSize="$7" fontWeight="$600">
+                  소요 시간
+                </Text>
+                <Stack
+                  width="$fluid"
+                  justify="space-between"
+                  items="center"
+                  p="$size.x3"
+                  bg="$colors.extraLightGray"
+                  borderWidth={1}
+                  borderColor="$colors.lightGray"
+                  gap="$size.x3"
+                  boxShadow="0 0 10px rgba(0, 0, 0, 0.2)"
+                  style={{ borderRadius: 12 }}>
+                  <Stack width="$fluid" justify="center" px="$size.x2">
+                    <Text fontSize="$5" fontWeight="$600">
+                      커스텀
+                    </Text>
+                  </Stack>
+                  <Stack width="$fluid" flexDirection="row" justify="space-between" items="center" gap="$size.x1_5">
+                    <Stack
+                      flex={1}
+                      p="$size.x2"
+                      borderWidth={1}
+                      borderColor="$colors.lightGray"
+                      bg="$colors.backgroundWhite"
+                      style={{ borderRadius: 12 }}>
+                      <Input
+                        labelContent="시간"
+                        size="$x12"
+                        fontSize="$8"
+                        px="$size.x2"
+                        bg="$colorTransparent"
+                        borderWidth={1}
+                        fontWeight="500"
+                        value={durationHours.toString()}
+                        onChangeText={(text: string) => onChangeHour(Number(text))}
+                        keyboardType="number-pad"
+                      />
+                    </Stack>
+                    <Stack
+                      flex={1}
+                      p="$size.x2"
+                      borderWidth={1}
+                      borderColor="$colors.lightGray"
+                      bg="$colors.backgroundWhite"
+                      style={{ borderRadius: 12 }}>
+                      <Input
+                        labelContent="분"
+                        size="$x12"
+                        px="$size.x2"
+                        fontSize="$8"
+                        bg="$colorTransparent"
+                        fontWeight="500"
+                        value={durationMinutes.toString()}
+                        onChangeText={(text: string) => onChangeMinute(Number(text))}
+                        keyboardType="number-pad"
+                      />
+                    </Stack>
+                  </Stack>
+                </Stack>
+                <Stack
+                  width="$fluid"
+                  justify="center"
+                  items="center"
+                  py="$size.x4"
+                  bg="$colors.primaryGreen"
+                  style={{ borderRadius: 12 }}
+                  onPress={onClose}>
+                  <Text fontSize="$8" fontWeight="$800" color="$colors.backgroundWhite">
+                    {dateTimeContext}으로 설정
+                  </Text>
+                </Stack>
+              </Stack>
+            </Sheet.Frame>
+          </Sheet>
+        )}
+      </Stack>
+    );
+  },
+);
+
+export const CreateEventScreen = memo(() => {
+  const route = useRouter();
   const { userId } = useUserStore();
   const [eventTitle, setEventTitle] = useState<string>('');
   const [dateTime, setDateTime] = useState<Date>(new Date());
+  const [duration, setDuration] = useState<number>(0);
   const [isShowDatePicker, setIsShowDatePicker] = useState<boolean>(false);
   const [isShowTimePicker, setIsShowTimePicker] = useState<boolean>(false);
+  const [isShowDurationPicker, setIsShowDurationPicker] = useState<boolean>(false);
   const [isCreateEventError, setIsCreateEventError] = useState<boolean>(false);
   const [createNewEventMutation] = useCreateNewEventMutation();
 
   const handleChangeEventTitle = useCallback((text: string) => {
     setEventTitle(text);
+  }, []);
+
+  const handleChangeDurationHour = useCallback((value: number) => {
+    setDuration((prevDuration) => {
+      const currentMinutes = prevDuration % 60;
+      const updatedValue = value * 60 + currentMinutes;
+      return updatedValue;
+    });
+  }, []);
+
+  const handleChangeDurationMinute = useCallback((value: number) => {
+    setDuration((prevDuration) => {
+      const currentHours = Math.floor(prevDuration / 60);
+      const updatedValue = currentHours * 60 + value;
+      return updatedValue;
+    });
   }, []);
 
   const handleShowDatePicker = useCallback(() => {
@@ -129,12 +300,20 @@ export const CreateEventScreen = memo(({ organizationId }: ICreateEventScreenPro
     setIsShowTimePicker(true);
   }, []);
 
+  const handleShowDurationPicker = useCallback(() => {
+    setIsShowDurationPicker(true);
+  }, []);
+
   const handleCloseDatePicker = useCallback(() => {
     setIsShowDatePicker(false);
   }, []);
 
   const handleCloseTimePicker = useCallback(() => {
     setIsShowTimePicker(false);
+  }, []);
+
+  const handleCloseDurationPicker = useCallback(() => {
+    setIsShowDurationPicker(false);
   }, []);
 
   const handleDateChange = useCallback((event: DateTimePickerEvent, selectedDate?: Date) => {
@@ -169,12 +348,17 @@ export const CreateEventScreen = memo(({ organizationId }: ICreateEventScreenPro
   }, []);
 
   const handlePressCreateEvent = useCallback(async () => {
+    const organizationId = await AsyncStorage.getItem('lastOrganizationId');
+    if (!organizationId) {
+      setIsCreateEventError(true);
+      return;
+    }
     const { errors: createEventErrors } = await createNewEventMutation({
       variables: {
         input: {
           eventTitle,
           eventStartAt: dateTime,
-          eventDuration: 0,
+          eventDuration: duration,
           hostOrganizationId: organizationId,
           hostUserId: userId,
         },
@@ -184,7 +368,8 @@ export const CreateEventScreen = memo(({ organizationId }: ICreateEventScreenPro
       setIsCreateEventError(true);
       return;
     }
-  }, [createNewEventMutation, dateTime, eventTitle, organizationId, userId]);
+    route.replace(`/organization/${organizationId}`);
+  }, [createNewEventMutation, dateTime, duration, eventTitle, route, userId]);
 
   return (
     <SafeAreaView edges={['top']} style={{ flex: 1 }}>
@@ -246,7 +431,6 @@ export const CreateEventScreen = memo(({ organizationId }: ICreateEventScreenPro
               <Input
                 value={eventTitle}
                 onChangeText={handleChangeEventTitle}
-                w="$fluid"
                 placeholder="이벤트 이름을 입력하세요"
                 labelContent="이벤트 이름 *"
                 labelFontColor="$colors.mediumGray"
@@ -277,14 +461,25 @@ export const CreateEventScreen = memo(({ organizationId }: ICreateEventScreenPro
                 onChangeUpdate={handleTimeChange}
               />
             </Stack>
+            <Stack width="$fluid" flexDirection="row" items="center" gap="$size.x2">
+              <DurationPicker
+                value={duration}
+                isShow={isShowDurationPicker}
+                onPressShow={handleShowDurationPicker}
+                onClose={handleCloseDurationPicker}
+                onChangeHour={handleChangeDurationHour}
+                onChangeMinute={handleChangeDurationMinute}
+              />
+            </Stack>
           </Stack>
           <Button
             px="$size.x6"
             py="$size.x3"
             bg="$colors.primaryGreen"
-            pressStyle={{ bg: '$colors.primaryGreen', scale: 0.99, opacity: 0.8 }}>
+            pressStyle={{ bg: '$colors.primaryGreen', scale: 0.99, opacity: 0.8 }}
+            onPress={handlePressCreateEvent}>
             <Text fontSize="$8" fontWeight="700" color="$colors.white">
-              다음으로
+              이벤트 생성하기
             </Text>
           </Button>
         </Stack>

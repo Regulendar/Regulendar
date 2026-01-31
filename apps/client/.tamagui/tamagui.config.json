@@ -70026,6 +70026,13 @@
           "val": "#2563EB",
           "variable": ""
         },
+        "extraLightGray": {
+          "isVar": true,
+          "key": "$extraLightGray",
+          "name": "t-colors-extraLightGray",
+          "val": "#f8fafc",
+          "variable": ""
+        },
         "lightGray": {
           "isVar": true,
           "key": "$lightGray",
@@ -70218,6 +70225,13 @@
         "key": "$errorRed",
         "name": "t-colors-errorRed",
         "val": "#ff686a",
+        "variable": ""
+      },
+      "$colors.extraLightGray": {
+        "isVar": true,
+        "key": "$extraLightGray",
+        "name": "t-colors-extraLightGray",
+        "val": "#f8fafc",
         "variable": ""
       },
       "$colors.fillGreen": {

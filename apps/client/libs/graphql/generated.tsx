@@ -419,7 +419,7 @@ export type GetMyScheduledEventsQueryVariables = Exact<{
 }>;
 
 
-export type GetMyScheduledEventsQuery = { __typename?: 'Query', getEvents: { __typename?: 'GetEventsOutputDto', events: Array<{ __typename?: 'EventDto', eventId: string, eventTitle: string, eventDateYear: number, eventDateMonth: number, eventDateDay: number, eventDuration: number, eventStatus: EventStatus }> } };
+export type GetMyScheduledEventsQuery = { __typename?: 'Query', getEvents: { __typename?: 'GetEventsOutputDto', events: Array<{ __typename?: 'EventDto', eventId: string, eventTitle: string, eventDateDay: number, eventStartAt: any, eventDuration: number, eventStatus: EventStatus, eventParticipations: Array<{ __typename?: 'EventParticipationDto', userId: string }> }> } };
 
 export type GetEventsByMonthQueryVariables = Exact<{
   input: GetEventsInputDto;
@@ -618,11 +618,13 @@ export const GetMyScheduledEventsDocument = gql`
     events {
       eventId
       eventTitle
-      eventDateYear
-      eventDateMonth
       eventDateDay
+      eventStartAt
       eventDuration
       eventStatus
+      eventParticipations {
+        userId
+      }
     }
   }
 }

@@ -3,11 +3,24 @@ query getMyScheduledEvents($input: GetEventsInputDto!) {
     events {
       eventId
       eventTitle
-      eventDateYear
-      eventDateMonth
       eventDateDay
+      eventStartAt
       eventDuration
       eventStatus
+      eventParticipations {
+        userId
+      }
+    }
+  }
+}
+
+query getEventsByMonth($input: GetEventsInputDto!) {
+  getEvents(input: $input) {
+    events {
+      eventId
+      eventParticipations {
+        userId
+      }
     }
   }
 }
